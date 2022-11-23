@@ -136,8 +136,8 @@ export const Dashboard = () => {
             <option disabled selected>
               Ordem da data
             </option>
-            <option value={"asc"}>Menor</option>
-            <option value={"desc"}>Maior</option>
+            <option value={"asc"}>maior</option>
+            <option value={"desc"}>menor</option>
           </select>
         </div>
 
