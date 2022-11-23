@@ -14,6 +14,7 @@ export const ContainerSignUp = styled.div`
 export const FormSignUp = styled.form`
   background-color: #FFF;
   display: flex;
+  border-radius: 5px;
   flex-direction: column;
   align-items: center;
   width: 25rem;

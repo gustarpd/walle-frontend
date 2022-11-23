@@ -2,19 +2,17 @@ import {
   Balance,
   Cards,
   CashOutTransaction,
-
   HeaderDashBoard,
   MessageEmpty,
   Table,
   TableCashOut,
   Transactions,
-  UserName,
 } from "./styles";
 
 import moment from "moment";
 
 import logong from "../../svgs/logo-ngcash-branco.svg";
-import { Input } from "../Login/styles";
+
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { useNavigate } from "react-router-dom";
@@ -31,22 +29,22 @@ export const Dashboard = () => {
   const [transactionsFiltered, setTransactionsFiltered] = useState<
     FilterType[]
   >([]);
-  
+
+  const [FilterDateValue, setFilterDateValue] = useState("asc");
+  const CashOutTransactioId = localStorage.getItem("ng:transactionsCashOutId");
 
   const navigate = useNavigate();
-
   const userId = localStorage.getItem("ng:userId");
-  const userName = localStorage.getItem("ng:user");
-  const token = localStorage.getItem("ng:token");
-
 
   async function getDataUser() {
-    await api.get(`/acount/${userId}`).then((res) => {
+    await api.get(`/account/${userId}`).then((res) => {
       setBalance(res.data.balance);
-      setTransactionsFiltered(res.data.filter);
+      return localStorage.setItem(
+        "ng:transactionsCashOutId",
+        res.data.trasactonCashout
+      );
     });
   }
-
 
   async function SendCashOut() {
     await api
@@ -56,28 +54,46 @@ export const Dashboard = () => {
       })
       .then((res) => {
         if (res.data.transaction) {
-          return alert(`Dinheiro transferido com sucesso`);
+          alert(`Dinheiro transferido com sucesso`);
+          getDataUser();
         }
 
-        if(res.data.error) {
-          return alert(res.data.error)
+        if (res.data.error) {
+          return alert(res.data.error);
         }
 
+        if (res.data.message) {
+          return alert(res.data.message);
+        }
       });
-  }
+    }
 
   useEffect(() => {
-    getDataUser()
+    async function getDateFiltered() {
+      await api
+        .get(`/account/filter/${CashOutTransactioId}`, {
+          params: {
+            datefilter: FilterDateValue,
+          },
+        })
+        .then((res) => {
+          setTransactionsFiltered(res.data.filter);
+        });
+    
+      }
+
+    getDateFiltered();
+  }, [FilterDateValue]);
+
+  useEffect(() => {
+    getDataUser();
   }, []);
 
-  useEffect(() => {
-    getDataUser()
-  }, [UserBalance])
-
   function Logout() {
-    localStorage.removeItem("ng:token");
-    localStorage.removeItem("ng:user");
-    localStorage.removeItem("ng:userId")
+    localStorage.removeItem("ng:usertoken");
+    localStorage.removeItem("ng:username");
+    localStorage.removeItem("ng:userId");
+    localStorage.removeItem("ng:transactionsCashOutId")
     navigate("/login");
   }
 
@@ -86,10 +102,7 @@ export const Dashboard = () => {
       <HeaderDashBoard>
         <img src={logong} />
         <span onClick={Logout}>
-
-        <UserName>{`Olá, ${userName}`}</UserName>
           <span>Logout</span>
-       
         </span>
       </HeaderDashBoard>
       <Cards>
@@ -99,29 +112,38 @@ export const Dashboard = () => {
           <h4>R$ {UserBalance}</h4>
         </Balance>
         <Transactions>
-          <h3>CashOut</h3>
-          <Input
-            placeholder="Usuario"
-            value={UserNameCashIn}
-            onChange={(e) => setUserNameCashIn(e.target.value)}
-          />{" "}
-          <br />
-          <Input
-            placeholder="Valor"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          <button onClick={SendCashOut}>Transferir valor</button>
+          <div>
+            <h3>CashOut</h3>
+            <input
+              placeholder="Usuário"
+              value={UserNameCashIn}
+              onChange={(e) => setUserNameCashIn(e.target.value)}
+            />{" "}
+            <br />
+            <input
+              placeholder="Valor"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+            <button onClick={SendCashOut}>Transferir valor</button>
+          </div>
         </Transactions>
       </Cards>
       <CashOutTransaction>
         <div>
-          <h3>Transações CashIn Recentes</h3>
+          <h3>transações Cash out Recentes</h3>
+          <select onChange={(e) => setFilterDateValue(e.target.value)}>
+            <option disabled selected>
+              Ordem da data
+            </option>
+            <option value={"asc"}>Menor</option>
+            <option value={"desc"}>Maior</option>
+          </select>
         </div>
 
         {transactionsFiltered.length === 0 ? (
           <MessageEmpty>
-            <p>Você não recebeu nenhuma transação</p>
+            <p>Selecione um filtro no canto superior esquerdo</p>
           </MessageEmpty>
         ) : (
           <>
@@ -134,15 +156,15 @@ export const Dashboard = () => {
               </div>
             </TableCashOut>
             <>
-              {transactionsFiltered.map((item) => {
+              {transactionsFiltered.map((item, index) => {
                 return (
-                  <Table>
+                  <Table key={index}>
                     <p>
                       {moment(item.createdAt).format(
                         "DD / MM / YYYY  HH:mm:ss"
                       )}
                     </p>
-                    <p>{`+ ${item.value}`}</p>
+                    <p>{`- ${item.value}`}</p>
                   </Table>
                 );
               })}

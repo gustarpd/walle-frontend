@@ -51,18 +51,27 @@ export const Balance = styled.div`
 export const Transactions = styled.div`
   height: 200px;
   background-color: #191919;
+  margin: 0 auto;
 
   h3 {
     margin-left: 20px;
   }
 
   input {
-    margin-left: 20px;
-    width: 57%;
+    margin: 0 0 5px 20px;
+    padding: 10px 0 10px 5px;
+    border: 0;
+    outline: 0;
+
+    width: 87%;
+  
   }
 
+
+
+
   button {
-    width: 21rem;
+    width: 89%;
     height: 30px;
     background-color: #fff;
     margin-top: 10px;
@@ -71,7 +80,13 @@ export const Transactions = styled.div`
     border: 0;
     cursor: pointer;
   }
+
 `;
+
+export const TransactionChildren = styled.div`
+
+ width: 40%;
+`
 
 export const CashOutTransaction = styled.div`
   margin: 0 auto;
@@ -93,6 +108,7 @@ export const CashOutTransaction = styled.div`
 
     select {
       border: 0;
+      width: 20%;
       outline: 0;
       background-color: #191919;
       color: #fff;
@@ -100,7 +116,10 @@ export const CashOutTransaction = styled.div`
 
     h3 {
       margin-top: 10px;
+      font-size: 14px;
     }
+
+    
   }
 `;
 
@@ -138,6 +157,11 @@ export const Table = styled.p`
 
   width: 73%;
   margin: 0 auto;
+
+  p:last-child {
+    color: red;
+  }
+
 `;
 
 export const MessageEmpty = styled.span`
@@ -145,10 +169,3 @@ export const MessageEmpty = styled.span`
 
   text-align: center;
 `;
-
-
-export const UserName = styled.span`
- padding: 5px 23px;
- color: #000;
- background-color: #f5f5f5;
-`

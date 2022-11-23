@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const RequireAuth = ({ children }: Props) => {
-  const isAuth = localStorage.getItem("ng:token");
+  const isAuth = localStorage.getItem("ng:usertoken");
 
   if (isAuth) {
     return children;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Rotas } from './Routes';
 import GlobalStyle from './styles/global';
 
