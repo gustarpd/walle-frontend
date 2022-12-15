@@ -1,12 +1,13 @@
 import { Button } from "../../components/Button";
 import { Container, FormMains, Input, P } from "./styles";
-import logong from "../../svgs/logo-ngcash-branco.svg";
+import logo from "../../svgs/wallet-svgrepo-com.svg";
 import { api } from "../../services/api";
 import { useState } from "react";
 
 interface Props {
   token: string;
   user: string;
+  username: string;
   error: string;
   userId: string;
 }
@@ -28,6 +29,7 @@ export const Login = () => {
           return alert(res.data.error);
         } else {
           localStorage.setItem("ng:usertoken", res.data.token);
+          localStorage.setItem("ng:username", res.data.username);
           localStorage.setItem("ng:userId", res.data.user);
           return window.location.href = '/'
         }
@@ -41,7 +43,7 @@ export const Login = () => {
     <>
       <Container>
         <FormMains>
-          <h2>NG.CASH SIGNIN</h2>
+          <h2>WALLE LOGIN</h2>
           <Input
             placeholder="Username"
             value={username}
@@ -63,7 +65,7 @@ export const Login = () => {
           </p>
         </FormMains>
         <P>
-          <img src={logong} />
+          <img src={logo} />
           <h1>A CARTEIRA DA NOVA GERAÇÃO.</h1>
           <h3>É para todas as idades!</h3>
         </P>

@@ -1,4 +1,4 @@
-import { Rotas } from './Routes';
+import { Rotas } from './routes';
 import GlobalStyle from './styles/global';
 
 

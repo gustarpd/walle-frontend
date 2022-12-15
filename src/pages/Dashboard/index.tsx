@@ -11,11 +11,12 @@ import {
 
 import moment from "moment";
 
-import logong from "../../svgs/logo-ngcash-branco.svg";
-
+import toast, { Toaster } from 'react-hot-toast'
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import logo from "../../svgs/wallet-svgrepo-com.svg";
+
 
 interface FilterType {
   createdAt: string;
@@ -32,16 +33,18 @@ export const Dashboard = () => {
 
   const [FilterDateValue, setFilterDateValue] = useState("asc");
   const CashOutTransactioId = localStorage.getItem("ng:transactionsCashOutId");
-
   const navigate = useNavigate();
   const userId = localStorage.getItem("ng:userId");
+  const username = localStorage.getItem("ng:username");
+
 
   async function getDataUser() {
     await api.get(`/account/${userId}`).then((res) => {
-      setBalance(res.data.balance);
+      setBalance(res.data.balance.balance);
+    
       return localStorage.setItem(
         "ng:transactionsCashOutId",
-        res.data.trasactonCashout
+        res.data.balance.trasacton_cashout
       );
     });
   }
@@ -54,7 +57,14 @@ export const Dashboard = () => {
       })
       .then((res) => {
         if (res.data.transaction) {
-          alert(`Dinheiro transferido com sucesso`);
+          toast.success("Dinheiro transferido com sucesso", {
+            position: 'top-center',
+            duration: 2000,
+            style: {
+              background: 'green',
+              color: '#fff'
+            }
+          })
           getDataUser();
         }
 
@@ -63,7 +73,15 @@ export const Dashboard = () => {
         }
 
         if (res.data.message) {
-          return alert(res.data.message);
+          toast.error(res.data.message, {
+            position: 'top-right',
+            duration: 2000,
+            style: {
+              background: 'red',
+              color: '#fff'
+            }
+          })
+          // return alert(res.data.message)
         }
       });
     }
@@ -98,27 +116,33 @@ export const Dashboard = () => {
   }
 
   return (
-    <>
+    <div>
+    <Toaster />
       <HeaderDashBoard>
-        <img src={logong} />
+        <div>
+          <img src={logo} />
+          <p>WALLEWEBAPP</p>
+        </div>
         <span onClick={Logout}>
-          <span>Logout</span>
+          <h4>Olá, {username}</h4>
+          <p>Logout</p>
         </span>
+
       </HeaderDashBoard>
       <Cards>
         <Balance>
           <h3>Conta</h3>
-          <p>Saldo disponivel</p>
+          <p>Saldo disponível</p>
           <h4>R$ {UserBalance}</h4>
         </Balance>
         <Transactions>
           <div>
-            <h3>CashOut</h3>
+            <h3>Transferir</h3>
             <input
               placeholder="Usuário"
               value={UserNameCashIn}
               onChange={(e) => setUserNameCashIn(e.target.value)}
-            />{" "}
+            />
             <br />
             <input
               placeholder="Valor"
@@ -134,16 +158,16 @@ export const Dashboard = () => {
           <h3>transações Cash out Recentes</h3>
           <select onChange={(e) => setFilterDateValue(e.target.value)}>
             <option disabled selected>
-              Ordem da data
+              Ordenar
             </option>
-            <option value={"asc"}>maior</option>
-            <option value={"desc"}>menor</option>
+            <option value={"asc"}>menor</option>
+            <option value={"desc"}>maior</option>
           </select>
         </div>
 
         {transactionsFiltered.length === 0 ? (
           <MessageEmpty>
-            <p>Selecione um filtro no canto superior esquerdo</p>
+            <p>Selecione um filtro no canto superior direito</p>
           </MessageEmpty>
         ) : (
           <>
@@ -164,7 +188,7 @@ export const Dashboard = () => {
                         "DD / MM / YYYY  HH:mm:ss"
                       )}
                     </p>
-                    <p>{`- ${item.value}`}</p>
+                    <p>{`- R$ ${item.value}`}</p>
                   </Table>
                 );
               })}
@@ -172,6 +196,6 @@ export const Dashboard = () => {
           </>
         )}
       </CashOutTransaction>
-    </>
+    </div>
   );
 };

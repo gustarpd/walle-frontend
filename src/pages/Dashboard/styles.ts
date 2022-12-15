@@ -9,9 +9,29 @@ export const HeaderDashBoard = styled.div`
   justify-content: space-between;
   margin-bottom: 30px;
 
+  div {
+    display: flex;
+    align-items: center;
+
+    p {
+      font-weight: 600;
+    }
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+
+    p {
+      margin: 0 0 0 20px;
+    }
+  }
+
   img {
-    width: 100px;
-    height: 75px;
+    width: 80px;
+    height: 65px;
     margin: 0 0 0 10px;
   }
 
