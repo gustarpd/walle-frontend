@@ -1,5 +1,7 @@
 # Carteira virtual para transferencia de dinheiro
 
+<img src="https://github.com/gustarpd/ng-frontend/blob/main/.github/demo.gif" />
+
 ## Features
 
 - Cadastro de usuários
